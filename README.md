@@ -73,16 +73,16 @@ Connect to your worker (multiple times), change the dirctory to `/srv` run the f
 in each shell:
 
 
-    ruby receiver.rb 192.168.40.10 '#'
-    ruby receiver.rb 192.168.40.11 'article.foo'
-    ruby receiver.rb 192.168.40.12 '*.bar'
+    bundle exec ruby receiver.rb 192.168.40.10 '#'
+    bundle exec ruby receiver.rb 192.168.40.11 'article.foo'
+    bundle exec ruby receiver.rb 192.168.40.12 '*.bar'
 
 The first parameter is the IP address of the RabbitMQ node that this receiver should connect to, the second parameter
 is the topic that this receiver subscribes to.
 
 In a fourth shell you can then send out messages to one of the brokers:
 
-    ruby sender.rb 192.168.40.10 article.foo
+    bundle exec ruby sender.rb 192.168.40.10 article.foo
 
 You will see that the receivers on the different nodes will get the federated message depending on if they
 subscribe to that topic or not.
