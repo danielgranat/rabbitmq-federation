@@ -1,0 +1,63 @@
+[
+  {rabbitmq_shovel,
+    [
+      {shovels,
+        [
+          {my_first_shovel,
+            [
+              {sources,
+                [
+                  {broker, "amqp://" }
+                  ,{declarations,
+                               [{'queue.declare',
+                                    [{queue, <<"foo.baz">>},
+                                      durable]},
+                                {'exchange.declare',
+                                       [{exchange, <<"amq.topic">>},
+                                        {type, <<"topic">>},
+                                        durable]},
+                                {'queue.bind',
+                                    [{exchange, <<"amq.topic">>},
+                                     {queue, <<"foo.baz">>}
+                                    ]
+                                }
+                               ]
+                  }
+                ]
+              },
+              {destinations,
+                [
+                  {brokers,
+                        ["amqp://guest:guest@192.168.40.12"]
+                  }
+                  ,{declarations,
+                               [{'queue.declare',
+                                    [{queue, <<"foo.baz2">>},
+                                      durable]},
+                                {'exchange.declare',
+                                       [{exchange, <<"shov.topic2">>},
+                                        {type, <<"topic">>},
+                                        durable]},
+                                {'queue.bind',
+                                    [{exchange, <<"shov.topic2">>},
+                                     {queue, <<"foo.baz2">>},
+                                     {routing_key, <<"foo.baz2">>}
+                                    ]
+                                }
+                               ]
+                  }
+                ]
+              }
+              ,{queue, <<"foo.baz">>}
+              ,{ack_mode, on_confirm}
+              ,{publish_properties, [{delivery_mode, 2}]}
+              ,{publish_fields, [{exchange, <<"shov.topic2">>},
+                              {routing_key, <<"foo.baz2">>}]}
+              ,{reconnect_delay, 5}
+            ]
+          }
+        ]
+      }
+    ]
+  }
+].
